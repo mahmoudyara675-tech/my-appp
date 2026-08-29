@@ -4,7 +4,7 @@ st.set_page_config(page_title="Prop Firm Backtest Tracker", layout="wide")
 st.title("📊 Auto Backtest Tracker (Prop Firms)")
 if 'trades' not in st.session_state:
     st.session_state.trades = []
-  st.sidebar.header("➕ Add New Trade")
+    st.sidebar.header("➕ Add New Trade")
 with st.sidebar.form("trade_form", clear_on_submit=True):
     session = st.selectbox("Session", ["NYC", "London", "Asia"])
     result = st.selectbox("Result", ["Win", "Loss"])

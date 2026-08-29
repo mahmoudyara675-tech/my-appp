@@ -12,7 +12,7 @@ lot_size = st.number_input("Lot Size", min_value=0.01, value=1.00, step=0.1)
 rr = st.number_input("Risk : Reward (R:R Ratio)", min_value=0.1, value=2.0, step=0.5)
 pair = st.text_input("Pair / Instrument", "EURUSD")
 notes = st.text_input("Notes / Confluence", "Silver Bullet 10AM FVG")
-submitted = st.form_submit_button("🚀 Add Trade")
+submitted = st.sidebar.form_submit_button("🚀 Add Trade")
 if submitted:
     trade_num = len(st.session_state.trades) + 1
     st.session_state.trades.append({

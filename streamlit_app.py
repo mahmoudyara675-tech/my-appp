@@ -5,14 +5,14 @@ st.title("📊 Auto Backtest Tracker (Prop Firms)")
 if 'trades' not in st.session_state:
     st.session_state.trades = []
     st.sidebar.header("➕ Add New Trade")
-with st.sidebar.form("trade_form", clear_on_submit=True):
-    session = st.selectbox("Session", ["NYC", "London", "Asia"])
-    result = st.selectbox("Result", ["Win", "Loss"])
-lot_size = st.number_input("Lot Size", min_value=0.01, value=1.00, step=0.1)
-rr = st.number_input("Risk : Reward (R:R Ratio)", min_value=0.1, value=2.0, step=0.5)
-pair = st.text_input("Pair / Instrument", "EURUSD")
-notes = st.text_input("Notes / Confluence", "Silver Bullet 10AM FVG")
-submitted = st.sidebar.form_submit_button("🚀 Add Trade")
+form = st.sidebar.form("trade_form")
+session = form.selectbox("Session", ["NYC", "London", "Asia"])
+result = form.selectbox("Result", ["Win", "Loss"])
+lot_size = form.number_input("Lot Size", min_value=0.01, value=1.00, step=0.1)
+rr = form.number_input("Risk : Reward (R:R Ratio)", min_value=0.1, value=2.0, step=0.5)
+pair = form.text_input("Pair / Instrument", "EURUSD")
+notes = form.text_input("Notes / Confluence", "Silver Bullet 10AM FVG")
+submitted = form.form_submit_button("🚀 Add Trade")
 if submitted:
     trade_num = len(st.session_state.trades) + 1
     st.session_state.trades.append({

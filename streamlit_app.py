@@ -31,5 +31,3 @@ if submitted:
     col2.metric("Total Trades", f"{len(df)}")
     col3.metric("Total Profit (R)", f"{df['R_Value'].sum():+.1f} R")
 st.dataframe(df.drop(columns=['R_Value']), use_container_width=True)
-else:
-    st.info("Use the sidebar to add your first trade!")

@@ -1,0 +1,304 @@
+import streamlit as st
+import pandas as pd
+import json
+import os
+from datetime import date
+
+# Page configuration with permanent expanded sidebar
+st.set_page_config(
+    page_title="MARAH // BMW M-POWER ELITE TERMINAL", 
+    page_icon="🏎️", 
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Ultra-Supreme Red & Black BMW M-Power Theme with Always-Visible Professional Sidebar
+st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+    .main {
+        background-color: #020203;
+        color: #f8fafc;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+
+    /* Supreme BMW Master Banner with Deep Red Glow */
+    .bmw-master-banner {
+        background: linear-gradient(135deg, rgba(2,2,3,0.9) 0%, rgba(35,2,8,0.85) 100%), 
+                    url('https://images.unsplash.com/photo-1555215695-3004980ad54e?q=80&w=1600&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        border: 2px solid #ff1744;
+        padding: 40px 35px;
+        border-radius: 24px;
+        box-shadow: 0 0 50px rgba(255, 23, 68, 0.4), inset 0 0 25px rgba(255, 23, 68, 0.2);
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .bmw-master-title {
+        font-family: 'Orbitron', sans-serif;
+        color: #ffffff;
+        font-size: 32px;
+        font-weight: 900;
+        letter-spacing: 2px;
+        margin: 0;
+        text-shadow: 0 0 25px rgba(255, 23, 68, 1);
+    }
+
+    .bmw-master-sub {
+        color: #fda4af;
+        font-size: 14px;
+        font-weight: 600;
+        margin: 8px 0 0 0;
+        letter-spacing: 1px;
+    }
+
+    .m-power-tag {
+        display: inline-block;
+        background: #ff1744;
+        color: white;
+        padding: 6px 16px;
+        border-radius: 6px;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 800;
+        font-size: 11px;
+        letter-spacing: 3px;
+        margin-bottom: 10px;
+        box-shadow: 0 0 15px #ff1744;
+    }
+
+    /* Elite Status Badge */
+    .trader-status-badge {
+        background: rgba(255, 23, 68, 0.15);
+        border: 1px solid rgba(255, 23, 68, 0.5);
+        color: #ff8a80;
+        padding: 12px 22px;
+        border-radius: 14px;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        text-align: center;
+        box-shadow: 0 0 25px rgba(255, 23, 68, 0.3);
+    }
+
+    /* Metric Cards Red Vibe */
+    .stMetric {
+        background: linear-gradient(145deg, #09090c 0%, #160408 100%);
+        border: 1px solid #3d0a14;
+        border-top: 3px solid #ff1744;
+        padding: 20px;
+        border-radius: 14px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    }
+
+    /* Always Visible Professional Sidebar Styling */
+    [data-testid="stSidebar"] {
+        background-color: #050508;
+        border-right: 2px solid #26050b;
+        padding-top: 20px;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Supreme Red Action Buttons inside Sidebar */
+    .stButton button {
+        background: linear-gradient(135deg, #ff1744 0%, #990011 100%);
+        color: white;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 700;
+        letter-spacing: 1px;
+        border-radius: 10px;
+        border: none;
+        padding: 12px 20px;
+        box-shadow: 0 0 20px rgba(255, 23, 68, 0.6);
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    .stButton button:hover {
+        background: linear-gradient(135deg, #ff4081 0%, #ff1744 100%);
+        box-shadow: 0 0 30px rgba(255, 23, 68, 0.9);
+        transform: translateY(-2px);
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Permanent Storage File
+DATA_FILE = "trades_data.json"
+
+if 'trades' not in st.session_state:
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "r") as f:
+            st.session_state.trades = json.load(f)
+    else:
+        st.session_state.trades = []
+
+def save_trades():
+    with open(DATA_FILE, "w") as f:
+        json.dump(st.session_state.trades, f)
+
+# Calculate Dynamic Status Tier
+total_trades = len(st.session_state.trades)
+wins = len([t for t in st.session_state.trades if t['Result'] == 'Win'])
+win_rate = (wins / total_trades) * 100 if total_trades > 0 else 0
+
+if total_trades == 0:
+    status_text = "STATUS: READY TO LAUNCH 🚀"
+elif win_rate >= 60:
+    status_text = "🔥 TIER: ELITE M-POWER TRADER"
+elif win_rate >= 40:
+    status_text = "⚡ TIER: PRO PROP TRADER"
+else:
+    status_text = "🛡️ TIER: RISK MANAGEMENT MODE"
+
+# Master Header
+st.markdown(f"""
+    <div class="bmw-master-banner">
+        <div>
+            <div class="m-power-tag">M-POWER RED EDITION ($25 Risk Profile)</div>
+            <h1 class="bmw-master-title">MARAH'S TERMINAL</h1>
+            <p class="bmw-master-sub">Elite Prop Firm Backtesting & High-Speed Execution Suite</p>
+        </div>
+        <div>
+            <div class="trader-status-badge">{status_text}</div>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+
+# Always Visible Professional Sidebar Execution Panel with Fixed $25 Risk Mapping
+with st.sidebar:
+    st.markdown("### 🏎️ EXECUTION PANEL")
+    st.markdown("---")
+    
+    with st.form("trade_form"):
+        st.markdown("##### 📅 Trade Parameters")
+        trade_date = st.date_input("Trade Date", value=date.today())
+        direction = st.selectbox("Direction", ["Long (Buy)", "Short (Sell)"])
+        session = st.selectbox("Session", ["NYC", "London", "Asia"])
+        pair = st.text_input("Pair / Instrument", "XAUUSD")
+        
+        st.markdown("##### 📊 Risk & Position Sizing ($25 Risk Rule)")
+        
+        # Stop Loss Selector (4 Options requested by Marah)
+        sl_options = ["20 pip", "30 pip", "40 pip", "50 pip"]
+        selected_sl = st.selectbox("Stop Loss (SL)", sl_options)
+        
+        # Precise Lot Mapping as requested: 50pip->0.1, 40pip->0.06, 30pip->0.08, 20pip->0.1
+        lot_mapping = {
+            "20 pip": 0.10,
+            "30 pip": 0.08,
+            "40 pip": 0.06,
+            "50 pip": 0.10
+        }
+        calculated_lot = lot_mapping[selected_sl]
+        
+        st.info(f"⚡ Auto Lot Size ($25 Fixed Risk): **{calculated_lot}**")
+        
+        # R:R fixed to 1:2 automatically
+        rr_display = "1:2"
+        st.text(f"Risk : Reward (R:R): {rr_display} (Fixed)")
+        
+        st.markdown("##### 🎯 Result & Notes")
+        result = st.selectbox("Result", ["Win", "Loss"])
+        notes = st.text_input("Notes / Confluence", "FVG / Session Setup")
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        submitted = st.form_submit_button("🚀 EXECUTE & RECORD")
+
+if submitted:
+    trade_num = len(st.session_state.trades) + 1
+    r_val = 2.0 if result == "Win" else -1.0
+    
+    st.session_state.trades.append({
+        "Trade #": trade_num,
+        "Date": str(trade_date),
+        "Direction": direction,
+        "Session": session,
+        "Pair": pair.upper(),
+        "SL": selected_sl,
+        "Lot Size": calculated_lot,
+        "R:R": rr_display,
+        "Result": result,
+        "R_Value": r_val,
+        "Notes": notes
+    })
+    save_trades()
+    st.success("Trade recorded successfully with exact $25 risk mapping!")
+    st.rerun()
+
+# Main Dashboard View
+if st.session_state.trades:
+    df = pd.DataFrame(st.session_state.trades)
+    
+    total_profit_r = df['R_Value'].sum()
+
+    # Calculate Max Consecutive Losses
+    max_consecutive_losses = 0
+    current_losses = 0
+    for res in df['Result']:
+        if res == 'Loss':
+            current_losses += 1
+            if current_losses > max_consecutive_losses:
+                max_consecutive_losses = current_losses
+        else:
+            current_losses = 0
+
+    # Metrics Layout
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Win Rate", f"{win_rate:.1f}%")
+    with col2:
+        st.metric("100 Trades Challenge", f"{total_trades} / 100")
+    with col3:
+        st.metric("Total Profit (R)", f"{total_profit_r:+.1f} R")
+    with col4:
+        st.metric("Max Cons. Losses", f"{max_consecutive_losses} Losses")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.subheader("🏁 Trade Ledger & Management")
+    
+    m_col1, m_col2 = st.columns([1.5, 1])
+    
+    with m_col1:
+        trade_to_delete = st.selectbox("Select Trade # to Delete", options=[None] + list(df['Trade #']))
+        if st.button("🗑️ Delete Selected Trade") and trade_to_delete is not None:
+            st.session_state.trades = [t for t in st.session_state.trades if t['Trade #'] != trade_to_delete]
+            for idx, t in enumerate(st.session_state.trades):
+                t['Trade #'] = idx + 1
+            save_trades()
+            st.warning(f"Trade #{trade_to_delete} removed.")
+            st.rerun()
+            
+    with m_col2:
+        st.markdown("##### ⚠️ Danger Zone")
+        confirm_all = st.checkbox("Confirm Delete All Records")
+        if st.button("🗑️ Delete All Trades", type="primary") and confirm_all:
+            st.session_state.trades = []
+            if os.path.exists(DATA_FILE):
+                os.remove(DATA_FILE)
+            st.success("All data cleared successfully.")
+            st.rerun()
+
+    st.markdown("---")
+    
+    # Styled Dataframe (Green for Win, Red for Loss)
+    def style_results(val):
+        if val == 'Win':
+            return 'background-color: rgba(16, 185, 129, 0.25); color: #34d399; font-weight: bold;'
+        elif val == 'Loss':
+            return 'background-color: rgba(239, 68, 68, 0.25); color: #f87171; font-weight: bold;'
+        return ''
+
+    display_df = df.drop(columns=['R_Value'])
+    styled_df = display_df.style.map(style_results, subset=['Result'])
+    
+    st.dataframe(styled_df, use_container_width=True)
+else:
+    st.info("No trades recorded yet. Use the permanent sidebar execution panel on the left to add your first trade!")
